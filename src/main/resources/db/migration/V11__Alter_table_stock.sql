@@ -1,0 +1,1 @@
+alter table stock alter column exchange_id type text;

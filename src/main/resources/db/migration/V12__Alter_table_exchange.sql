@@ -1,0 +1,1 @@
+alter table exchange add column name text not null;
