@@ -1,0 +1,1 @@
+alter table tax_group add column exemption_cents bigint not null;

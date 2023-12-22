@@ -15,6 +15,8 @@ public interface StockService {
 
     Collection<Stock> findByExchange_Mic(String mic);
 
+    Collection<Stock> findByTaxGroup_Id(Short id);
+
     Stock update(Stock stock, String id);
 
     void delete(String id);

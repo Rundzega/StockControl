@@ -35,6 +35,11 @@ public class Stock {
 
     @NotNull
     @ManyToOne()
+    @JoinColumn(name = "tax_group_id")
+    private TaxGroup taxGroup;
+
+    @NotNull
+    @ManyToOne()
     @JoinColumn()
     private Exchange exchange;
 
@@ -51,5 +56,7 @@ public class Stock {
         this.name = data.name();
         this.exchange = new Exchange();
         this.exchange.setMic(exchangeMic);
+        this.taxGroup = new TaxGroup();
+        this.taxGroup.setId(data.taxGroupId());
     }
 }

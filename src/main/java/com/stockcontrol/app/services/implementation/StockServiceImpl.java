@@ -2,9 +2,11 @@ package com.stockcontrol.app.services.implementation;
 
 import com.stockcontrol.app.domain.stock.Exchange;
 import com.stockcontrol.app.domain.stock.Stock;
+import com.stockcontrol.app.domain.stock.TaxGroup;
 import com.stockcontrol.app.repositories.StockRepository;
 import com.stockcontrol.app.services.ExchangeService;
 import com.stockcontrol.app.services.StockService;
+import com.stockcontrol.app.services.TaxGroupService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,9 @@ public class StockServiceImpl implements StockService {
     @Autowired
     private final ExchangeService exchangeService;
 
+    @Autowired
+    private final TaxGroupService taxGroupService;
+
     @Override
     public Stock create(Stock stock) {
         if (stockRepository.findByTickerAndExchange_Mic(stock.getTicker(), stock.getExchange().getMic()).isPresent()) {
@@ -32,6 +37,9 @@ public class StockServiceImpl implements StockService {
         }
         Exchange exchange = exchangeService.findByMic(stock.getExchange().getMic());
         stock.setExchange(exchange);
+        System.out.println(stock.getTaxGroup().getId());
+        TaxGroup taxGroup = taxGroupService.findById(stock.getTaxGroup().getId());
+        stock.setTaxGroup(taxGroup);
 
         return stockRepository.save(stock);
     }
@@ -58,6 +66,11 @@ public class StockServiceImpl implements StockService {
     @Override
     public Collection<Stock> findByExchange_Mic(String mic) {
         return stockRepository.findByExchange_Mic(mic);
+    }
+
+    @Override
+    public Collection<Stock> findByTaxGroup_Id(Short id) {
+        return stockRepository.findByTaxGroup_Id(id);
     }
 
     @Override

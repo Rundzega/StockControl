@@ -10,4 +10,6 @@ public interface StockRepository extends JpaRepository<Stock, String> {
     Optional<Stock> findByTickerAndExchange_Mic(String ticker, String mic);
 
     Collection<Stock> findByExchange_Mic(String mic);
+
+    Collection<Stock> findByTaxGroup_Id(Short id);
 }
