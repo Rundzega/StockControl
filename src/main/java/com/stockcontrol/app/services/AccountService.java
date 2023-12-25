@@ -1,6 +1,6 @@
 package com.stockcontrol.app.services;
 
-import com.stockcontrol.app.domain.Account;
+import com.stockcontrol.app.domain.account.Account;
 
 import java.util.Collection;
 
@@ -11,7 +11,7 @@ public interface AccountService {
 
     public Account findById(String id);
 
-    public Account findByEmail(String email);
+    public Account findByProviderAndProviderId(String Provider, String ProviderId);
 
     public Account update(Account account, String id);
 

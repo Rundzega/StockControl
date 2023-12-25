@@ -1,8 +1,10 @@
 package com.stockcontrol.app.services.implementation;
 
-import com.stockcontrol.app.domain.Account;
+import com.stockcontrol.app.domain.account.Account;
+import com.stockcontrol.app.domain.account.Role;
 import com.stockcontrol.app.repositories.AccountRepository;
 import com.stockcontrol.app.services.AccountService;
+import com.stockcontrol.app.services.RoleService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,16 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private final AccountRepository accountRepository;
 
+    @Autowired
+    private final RoleService roleService;
+
     @Override
     public Account create(Account account) {
-        if (accountRepository.findByEmail(account.getEmail()).isPresent()) {
-            throw new DataIntegrityViolationException("email already registered.");
+        if (accountRepository.findByProviderAndProviderId(account.getProvider(), account.getProviderId()).isPresent()) {
+            throw new DataIntegrityViolationException("Account already registered.");
         }
+        Role role = roleService.findById("user");
+        account.setRole(role);
         return accountRepository.save(account);
     }
 
@@ -39,8 +46,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account findByEmail(String email) {
-        return accountRepository.findByEmail(email).orElseThrow(() -> {
+    public Account findByProviderAndProviderId(String provider, String providerId) {
+        return accountRepository.findByProviderAndProviderId(provider, providerId).orElseThrow(() -> {
             throw new EntityNotFoundException("Account not found.");
         });
     }
@@ -48,8 +55,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account update(Account account, String id) {
         return accountRepository.findById(id).map(dbAccount -> {
-            dbAccount.setFirstName(account.getFirstName());
-            dbAccount.setLastName(account.getLastName());
+            dbAccount.setRole(account.getRole());
+            dbAccount.setEmail(account.getEmail());
             return accountRepository.save(dbAccount);
         }).orElseGet(() -> {
             account.setId(id);

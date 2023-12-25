@@ -1,16 +1,16 @@
-package com.stockcontrol.app.domain;
+package com.stockcontrol.app.domain.account;
 
-import com.stockcontrol.app.dto.RequestAccountDTO;
+import com.stockcontrol.app.domain.operation.Operation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,19 +22,24 @@ public class Account {
     private String id;
 
     @Column
-    @NotBlank
-    @Size(max = 60)
-    private String firstName;
-
-    @Column
-    @NotBlank
-    @Size(max = 60)
-    private String lastName;
-
-    @Column
     @Email
     @NotBlank
     private String email;
+
+    @Column
+    @NotBlank
+    private String provider;
+
+    @Column
+    @NotBlank
+    private String providerId;
+
+    @JoinColumn()
+    @ManyToOne()
+    private Role role;
+
+    @OneToMany(mappedBy = "account")
+    List<Operation> operations;
 
     @Column
     @CreationTimestamp
@@ -43,10 +48,4 @@ public class Account {
     @Column
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    public Account(RequestAccountDTO data) {
-        this.firstName = data.firstName();
-        this.lastName = data.lastName();
-        this.email = data.email();
-    }
 }

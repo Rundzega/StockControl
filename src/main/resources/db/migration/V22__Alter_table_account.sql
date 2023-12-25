@@ -1,0 +1,1 @@
+alter table account add column last_logged timestamp not null;
